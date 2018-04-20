@@ -345,7 +345,7 @@ class DataGenerator:
 			#for image_id in image_ids:
 			for image_id in tqdm(image_ids, desc=os.path.basename(image_set_filename)):
 
-				filename = '{}'.format(image_id) + '.jpeg'
+				filename = '{}'.format(image_id) + '.jpg'
 				self.filenames.append(os.path.join(images_dir, filename))
 
 				if not annotations_dir is None:
