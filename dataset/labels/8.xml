@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<annotation>
+   <folder>own</folder>
+   <filename>8</filename>
+   <size>
+      <width>1920</width>
+      <height>1080</height>
+      <depth>3</depth>
+   </size>
+   <segmented>0</segmented>
+   <object>
+      <name>boat</name>
+      <pose>Unspecified</pose>
+      <truncated>0</truncated>
+      <difficult>0</difficult>
+      <bndbox>
+         <xmin>1124</xmin>
+         <ymin>533</ymin>
+         <xmax>82</xmax>
+         <ymax>107</ymax>
+      </bndbox>
+   </object>
+   <object>
+      <name>boat</name>
+      <pose>Unspecified</pose>
+      <truncated>0</truncated>
+      <difficult>0</difficult>
+      <bndbox>
+         <xmin>1076</xmin>
+         <ymin>559</ymin>
+         <xmax>56</xmax>
+         <ymax>82</ymax>
+      </bndbox>
+   </object>
+   <object>
+      <name>boat</name>
+      <pose>Unspecified</pose>
+      <truncated>0</truncated>
+      <difficult>0</difficult>
+      <bndbox>
+         <xmin>986</xmin>
+         <ymin>558</ymin>
+         <xmax>70</xmax>
+         <ymax>74</ymax>
+      </bndbox>
+   </object>
+</annotation>

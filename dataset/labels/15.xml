@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<annotation>
+   <folder>own</folder>
+   <filename>15</filename>
+   <size>
+      <width>1920</width>
+      <height>1090</height>
+      <depth>3</depth>
+   </size>
+   <segmented>0</segmented>
+   <object>
+      <name>boat</name>
+      <pose>Unspecified</pose>
+      <truncated>0</truncated>
+      <difficult>0</difficult>
+      <bndbox>
+         <xmin>1560</xmin>
+         <ymin>364</ymin>
+         <xmax>237</xmax>
+         <ymax>162</ymax>
+      </bndbox>
+   </object>
+</annotation>
