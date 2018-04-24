@@ -698,6 +698,7 @@ class DataGenerator:
 					batch_y[i] = np.array(batch_y[i])
 					# If this image has no ground truth boxes, maybe we don't want to keep it in the batch.
 					if (batch_y[i].size == 0) and not keep_images_without_gt:
+						print('NO GT BOX')
 						batch_items_to_remove.append(i)
 						batch_inverse_transforms.append([])
 						continue
@@ -718,6 +719,7 @@ class DataGenerator:
 								batch_X[i], batch_y[i] = transform(batch_X[i], batch_y[i])
 
 							if batch_X[i] is None: # In case the transform failed to produce an output image, which is possible for some random transforms.
+								print('RANDOM GEN FAIL')
 								batch_items_to_remove.append(i)
 								batch_inverse_transforms.append([])
 								continue
