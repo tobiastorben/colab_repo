@@ -1,0 +1,44 @@
+<annotation>
+	<folder>VOC2007</folder>
+	<filename>003929.jpg</filename>
+	<source>
+		<database>The VOC2007 Database</database>
+		<annotation>PASCAL VOC2007</annotation>
+		<image>flickr</image>
+		<flickrid>338293891</flickrid>
+	</source>
+	<owner>
+		<flickrid>noreenpot</flickrid>
+		<name>?</name>
+	</owner>
+	<size>
+		<width>500</width>
+		<height>375</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>boat</name>
+		<pose>Frontal</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>18</xmin>
+			<ymin>62</ymin>
+			<xmax>58</xmax>
+			<ymax>112</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>boat</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>1</difficult>
+		<bndbox>
+			<xmin>308</xmin>
+			<ymin>57</ymin>
+			<xmax>355</xmax>
+			<ymax>114</ymax>
+		</bndbox>
+	</object>
+</annotation>
