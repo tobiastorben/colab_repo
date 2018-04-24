@@ -365,7 +365,7 @@ class DataGenerator:
 						class_id = self.classes.index(class_name)
 						# Check if this class is supposed to be included in the dataset
 						if (not self.include_classes == 'all') and (not class_id in self.include_classes): continue
-						pose = obj.pose.text
+						pose = 'Unspecified'
 						truncated = int(obj.truncated.text)
 						if exclude_truncated and (truncated == 1): continue
 						difficult = int(obj.difficult.text)
