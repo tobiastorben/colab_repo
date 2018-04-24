@@ -116,11 +116,6 @@ COCO2014pascalformat
 0
 </difficult>
 </object>
-</object>
-</object>
-</object>
-</object>
-</object>
 <object>
 <name>boat</name>
 <bndbox>
@@ -190,10 +185,6 @@ COCO2014pascalformat
 0
 </difficult>
 </object>
-</object>
-</object>
-</object>
-</object>
 <object>
 <name>boat</name>
 <bndbox>
@@ -240,12 +231,6 @@ COCO2014pascalformat
 0
 </difficult>
 </object>
-</object>
-</object>
-</object>
-</object>
-</object>
-</object>
 <object>
 <name>boat</name>
 <bndbox>
@@ -268,7 +253,6 @@ COCO2014pascalformat
 <difficult>
 0
 </difficult>
-</object>
 </object>
 <object>
 <name>boat</name>
