@@ -34,7 +34,7 @@ COCO2014pascalformat
 </object>
 </object>
 <object>
-<name>9</name>
+<name>boat</name>
 <bndbox>
 <xmin>
 553
@@ -57,7 +57,7 @@ COCO2014pascalformat
 </difficult>
 </object>
 <object>
-<name>9</name>
+<name>boat</name>
 <bndbox>
 <xmin>
 570
@@ -80,7 +80,7 @@ COCO2014pascalformat
 </difficult>
 </object>
 <object>
-<name>9</name>
+<name>boat</name>
 <bndbox>
 <xmin>
 631
@@ -103,7 +103,7 @@ COCO2014pascalformat
 </difficult>
 </object>
 <object>
-<name>9</name>
+<name>boat</name>
 <bndbox>
 <xmin>
 529
@@ -126,7 +126,7 @@ COCO2014pascalformat
 </difficult>
 </object>
 <object>
-<name>9</name>
+<name>boat</name>
 <bndbox>
 <xmin>
 614
@@ -149,7 +149,7 @@ COCO2014pascalformat
 </difficult>
 </object>
 <object>
-<name>9</name>
+<name>boat</name>
 <bndbox>
 <xmin>
 509
@@ -172,7 +172,7 @@ COCO2014pascalformat
 </difficult>
 </object>
 <object>
-<name>9</name>
+<name>boat</name>
 <bndbox>
 <xmin>
 517
@@ -197,7 +197,7 @@ COCO2014pascalformat
 </object>
 </object>
 <object>
-<name>9</name>
+<name>boat</name>
 <bndbox>
 <xmin>
 586
@@ -220,7 +220,7 @@ COCO2014pascalformat
 </difficult>
 </object>
 <object>
-<name>9</name>
+<name>boat</name>
 <bndbox>
 <xmin>
 584
@@ -243,7 +243,7 @@ COCO2014pascalformat
 </difficult>
 </object>
 <object>
-<name>9</name>
+<name>boat</name>
 <bndbox>
 <xmin>
 596
@@ -266,7 +266,7 @@ COCO2014pascalformat
 </difficult>
 </object>
 <object>
-<name>9</name>
+<name>boat</name>
 <bndbox>
 <xmin>
 539
