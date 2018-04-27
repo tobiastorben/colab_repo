@@ -25,7 +25,7 @@ bs4.builder.register_treebuilders_from(bs4.builder._lxml)
 # Set a few configuration parameters.
 img_height = 300
 img_width = 300
-n_classes = 20
+n_classes = 1
 model_mode = 'inference'
 
 # 1: Build the Keras model
@@ -61,7 +61,7 @@ model = ssd_300(image_size=(img_height, img_width, 3),
 
 # 2: Load the trained weights into the model.
 
-weights_path = "C:/Users/t_tor/Unsynced/ssd_weights/VGG_VOC0712Plus_SSD_300x300_ft_iter_160000.h5"
+weights_path = "C:/Users/t_tor/Unsynced/ssd_weights/colab.h5"
 
 model.load_weights(weights_path, by_name=True)
 
@@ -89,20 +89,18 @@ voc07test_images = "C:/Users/t_tor/Unsynced/complete_dataset/voc07_test.txt"
 
 
 # The XML parser needs to now what object class names to look for and in which order to map them to integers.
-#classes = ['background', 'boat']
-
- 
 classes = ['background',
             'aeroplane', 'bicycle', 'bird', 'boat',
             'bottle', 'bus', 'car', 'cat',
             'chair', 'cow', 'diningtable', 'dog',
             'horse', 'motorbike', 'person', 'pottedplant',
             'sheep', 'sofa', 'train', 'tvmonitor']
- 
+
+classes = ['background', 'boat'] 
 
 
 dataset.parse_xml(images_dirs=[images],
-                  image_set_filenames=[custom_images],
+                  image_set_filenames=[voc07test_images],
                   annotations_dirs=[annotations],
                   classes=classes,
                   include_classes='all',
