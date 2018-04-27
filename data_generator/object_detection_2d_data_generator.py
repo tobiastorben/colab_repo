@@ -373,7 +373,7 @@ class DataGenerator:
             # Loop over all images in this dataset.
             for image_id in tqdm(image_ids, desc=os.path.basename(image_set_filename), file=sys.stdout):
 
-                filename = '{}'.format(image_id) + '.jpg'
+                filename = '{}'.format(image_id) + '.jpeg'
                 self.filenames.append(os.path.join(images_dir, filename))
 
                 if not annotations_dir is None:
@@ -401,10 +401,10 @@ class DataGenerator:
                         if exclude_difficult and (difficult == 1): continue
                         # Get the bounding box coordinates.
                         bndbox = obj.find('bndbox', recursive=False)
-                        xmin = int(bndbox.xmin.text)
-                        ymin = int(bndbox.ymin.text)
-                        xmax = int(bndbox.xmax.text)
-                        ymax = int(bndbox.ymax.text)
+                        xmin = int(float(bndbox.xmin.text))
+                        ymin = int(float(bndbox.ymin.text))
+                        xmax = int(float(bndbox.xmax.text))
+                        ymax = int(float(bndbox.ymax.text))
                         item_dict = {'folder': folder,
                                      'image_name': filename,
                                      'image_id': image_id,
@@ -857,7 +857,7 @@ class DataGenerator:
             if 'inverse_transform' in returns: ret.append(batch_inverse_transforms)
             if 'original_images' in returns: ret.append(batch_original_images)
             if 'original_labels' in returns: ret.append(batch_original_labels)
-			print(ret)
+			
             yield ret
 
     def save_dataset(self,

@@ -1,0 +1,12 @@
+Results on VOC07Test, iou thresh = 0.7:
+Untrained VGG0712: 45.2
+Untrained VGG0712 subsampled: 44.7
+Untrained COCO Subsampled: 47.0
+COCO Trained 8000: 45.9
+
+Results on Custom Images, iou thresh = 0.7:
+Untrained VGG0712: 0.4
+Untrained VGG0712 subsampled: 0.3
+Untrained COCO Subsampled: 5.2
+COCO Trained 8000: 2.8
+
