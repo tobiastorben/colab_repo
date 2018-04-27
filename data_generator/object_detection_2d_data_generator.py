@@ -857,7 +857,7 @@ class DataGenerator:
             if 'inverse_transform' in returns: ret.append(batch_inverse_transforms)
             if 'original_images' in returns: ret.append(batch_original_images)
             if 'original_labels' in returns: ret.append(batch_original_labels)
-
+			print(ret)
             yield ret
 
     def save_dataset(self,
