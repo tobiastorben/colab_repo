@@ -52,6 +52,7 @@ class SSDInputEncoder:
                  matching_type='multi',
                  pos_iou_threshold=0.5,
                  neg_iou_limit=0.3,
+                 include_border_pixels=True,
                  coords='centroids',
                  normalize_coords=True,
                  background_id=0):
@@ -78,19 +79,16 @@ class SSDInputEncoder:
                 This list must be one element longer than the number of predictor layers. The first `k` elements are the
                 scaling factors for the `k` predictor layers, while the last element is used for the second box
                 for aspect ratio 1 in the last predictor layer if `two_boxes_for_ar1` is `True`. This additional
-                last scaling factor must be passed either way, even if it is not being used.
-                Defaults to `None`. If a list is passed, this argument overrides `min_scale` and
-                `max_scale`. All scaling factors must be greater than zero. Note that you should set the scaling factors
-                such that the resulting anchor box sizes correspond to the sizes of the objects you are trying
-                to detect.
+                last scaling factor must be passed either way, even if it is not being used. If a list is passed,
+                this argument overrides `min_scale` and `max_scale`. All scaling factors must be greater than zero.
+                Note that you should set the scaling factors such that the resulting anchor box sizes correspond to
+                the sizes of the objects you are trying to detect.
             aspect_ratios_global (list, optional): The list of aspect ratios for which anchor boxes are to be
-                generated. This list is valid for all prediction layers. Defaults to [0.5, 1.0, 2.0]. Note that you should
-                set the aspect ratios such that the resulting anchor box shapes roughly correspond to the shapes of the
-                objects you are trying to detect.
+                generated. This list is valid for all prediction layers. Note that you should set the aspect ratios such
+                that the resulting anchor box shapes roughly correspond to the shapes of the objects you are trying to detect.
             aspect_ratios_per_layer (list, optional): A list containing one aspect ratio list for each prediction layer.
-                If a list is passed, it overrides `aspect_ratios_global`. Defaults to `None`. Note that you should
-                set the aspect ratios such that the resulting anchor box shapes very roughly correspond to the shapes of the
-                objects you are trying to detect.
+                If a list is passed, it overrides `aspect_ratios_global`. Note that you should set the aspect ratios such
+                that the resulting anchor box shapes very roughly correspond to the shapes of the objects you are trying to detect.
             two_boxes_for_ar1 (bool, optional): Only relevant for aspect ratios lists that contain 1. Will be ignored otherwise.
                 If `True`, two anchor boxes will be generated for aspect ratio 1. The first will be generated
                 using the scaling factor for the respective layer, the second one will be generated using
@@ -121,6 +119,9 @@ class SSDInputEncoder:
             neg_iou_limit (float, optional): The maximum allowed intersection-over-union similarity of an
                 anchor box with any ground truth box to be labeled a negative (i.e. background) box. If an
                 anchor box is neither a positive, nor a negative box, it will be ignored during training.
+            include_border_pixels (bool, optional): Whether the border pixels of the bounding boxes belong to them or not.
+                For example, if a bounding box has an `xmax` pixel value of 367, this determines whether the pixels with
+                x-value 367 belong to the bounding box or not.
             coords (str, optional): The box coordinate format to be used internally by the model (i.e. this is not the input format
                 of the ground truth labels). Can be either 'centroids' for the format `(cx, cy, w, h)` (box center coordinates, width,
                 and height), 'minmax' for the format `(xmin, xmax, ymin, ymax)`, or 'corners' for the format `(xmin, ymin, xmax, ymax)`.
@@ -130,14 +131,18 @@ class SSDInputEncoder:
             background_id (int, optional): Determines which class ID is for the background class.
         '''
         predictor_sizes = np.array(predictor_sizes)
-        if len(predictor_sizes.shape) == 1:
+        if predictor_sizes.ndim == 1:
             predictor_sizes = np.expand_dims(predictor_sizes, axis=0)
+
+        ##################################################################################
+        # Handle exceptions.
+        ##################################################################################
 
         if (min_scale is None or max_scale is None) and scales is None:
             raise ValueError("Either `min_scale` and `max_scale` or `scales` need to be specified.")
 
         if scales:
-            if (len(scales) != len(predictor_sizes)+1): # Must be two nested `if` statements since `list` and `bool` cannot be combined by `&`
+            if (len(scales) != predictor_sizes.shape[0] + 1): # Must be two nested `if` statements since `list` and `bool` cannot be combined by `&`
                 raise ValueError("It must be either scales is None or len(scales) == len(predictor_sizes)+1, but len(scales) == {} and len(predictor_sizes)+1 == {}".format(len(scales), len(predictor_sizes)+1))
             scales = np.array(scales)
             if np.any(scales <= 0):
@@ -147,7 +152,7 @@ class SSDInputEncoder:
                 raise ValueError("It must be 0 < min_scale <= max_scale, but it is min_scale = {} and max_scale = {}".format(min_scale, max_scale))
 
         if not (aspect_ratios_per_layer is None):
-            if (len(aspect_ratios_per_layer) != len(predictor_sizes)): # Must be two nested `if` statements since `list` and `bool` cannot be combined by `&`
+            if (len(aspect_ratios_per_layer) != predictor_sizes.shape[0]): # Must be two nested `if` statements since `list` and `bool` cannot be combined by `&`
                 raise ValueError("It must be either aspect_ratios_per_layer is None or len(aspect_ratios_per_layer) == len(predictor_sizes), but len(aspect_ratios_per_layer) == {} and len(predictor_sizes) == {}".format(len(aspect_ratios_per_layer), len(predictor_sizes)))
             for aspect_ratios in aspect_ratios_per_layer:
                 if np.any(np.array(aspect_ratios) <= 0):
@@ -167,48 +172,62 @@ class SSDInputEncoder:
         if not (coords == 'minmax' or coords == 'centroids' or coords == 'corners'):
             raise ValueError("Unexpected value for `coords`. Supported values are 'minmax', 'corners' and 'centroids'.")
 
-        if (not (steps is None)) and (len(steps) != len(predictor_sizes)):
+        if (not (steps is None)) and (len(steps) != predictor_sizes.shape[0]):
             raise ValueError("You must provide at least one step value per predictor layer.")
 
-        if (not (offsets is None)) and (len(offsets) != len(predictor_sizes)):
+        if (not (offsets is None)) and (len(offsets) != predictor_sizes.shape[0]):
             raise ValueError("You must provide at least one offset value per predictor layer.")
+
+        ##################################################################################
+        # Set or compute members.
+        ##################################################################################
 
         self.img_height = img_height
         self.img_width = img_width
-        self.n_classes = n_classes + 1
+        self.n_classes = n_classes + 1 # + 1 for the background class
         self.predictor_sizes = predictor_sizes
         self.min_scale = min_scale
         self.max_scale = max_scale
+        # If `scales` is None, compute the scaling factors by linearly interpolating between
+        # `min_scale` and `max_scale`. If an explicit list of `scales` is given, however,
+        # then it takes precedent over `min_scale` and `max_scale`.
         if (scales is None):
             self.scales = np.linspace(self.min_scale, self.max_scale, len(self.predictor_sizes)+1)
         else:
             # If a list of scales is given explicitly, we'll use that instead of computing it from `min_scale` and `max_scale`.
             self.scales = scales
+        # If `aspect_ratios_per_layer` is None, then we use the same list of aspect ratios
+        # `aspect_ratios_global` for all predictor layers. If `aspect_ratios_per_layer` is given,
+        # however, then it takes precedent over `aspect_ratios_global`.
         if (aspect_ratios_per_layer is None):
-            self.aspect_ratios = [aspect_ratios_global] * len(predictor_sizes)
+            self.aspect_ratios = [aspect_ratios_global] * predictor_sizes.shape[0]
         else:
             # If aspect ratios are given per layer, we'll use those.
             self.aspect_ratios = aspect_ratios_per_layer
         self.two_boxes_for_ar1 = two_boxes_for_ar1
-        if (not steps is None):
+        if not (steps is None):
             self.steps = steps
         else:
-            self.steps = [None] * len(predictor_sizes)
-        if (not offsets is None):
+            self.steps = [None] * predictor_sizes.shape[0]
+        if not (offsets is None):
             self.offsets = offsets
         else:
-            self.offsets = [None] * len(predictor_sizes)
+            self.offsets = [None] * predictor_sizes.shape[0]
         self.clip_boxes = clip_boxes
         self.variances = variances
         self.matching_type = matching_type
         self.pos_iou_threshold = pos_iou_threshold
         self.neg_iou_limit = neg_iou_limit
+        self.include_border_pixels = include_border_pixels
         self.coords = coords
         self.normalize_coords = normalize_coords
         self.background_id = background_id
 
-        # Compute the number of boxes per cell.
-        if aspect_ratios_per_layer:
+        # Compute the number of boxes per spatial location for each predictor layer.
+        # For example, if a predictor layer has three different aspect ratios, [1.0, 0.5, 2.0], and is
+        # supposed to predict two boxes of slightly different size for aspect ratio 1.0, then that predictor
+        # layer predicts a total of four boxes at every spatial location across the feature map.
+        if not (aspect_ratios_per_layer is None):
             self.n_boxes = []
             for aspect_ratios in aspect_ratios_per_layer:
                 if (1 in aspect_ratios) & two_boxes_for_ar1:
@@ -221,17 +240,25 @@ class SSDInputEncoder:
             else:
                 self.n_boxes = len(aspect_ratios_global)
 
-        # Compute the anchor boxes for all the predictor layers. We only have to do this once
-        # as the anchor boxes depend only on the model configuration, not on the input data.
-        # For each conv predictor layer (i.e. for each scale factor)the tensors for that lauer's
-        # anchor boxes will have the shape `(feature_map_height, feature_map_width, n_boxes, 4)`.
-        self.boxes_list = [] # This will contain the anchor boxes for each predicotr layer.
+        ##################################################################################
+        # Compute the anchor boxes for each predictor layer.
+        ##################################################################################
 
+        # Compute the anchor boxes for each predictor layer. We only have to do this once
+        # since the anchor boxes depend only on the model configuration, not on the input data.
+        # For each predictor layer (i.e. for each scaling factor) the tensors for that layer's
+        # anchor boxes will have the shape `(feature_map_height, feature_map_width, n_boxes, 4)`.
+
+        self.boxes_list = [] # This will store the anchor boxes for each predicotr layer.
+
+        # The following lists just store diagnostic information. Sometimes it's handy to have the
+        # boxes' center points, heights, widths, etc. in a list.
         self.wh_list_diag = [] # Box widths and heights for each predictor layer
         self.steps_diag = [] # Horizontal and vertical distances between any two boxes for each predictor layer
         self.offsets_diag = [] # Offsets for each predictor layer
         self.centers_diag = [] # Anchor box center points as `(cy, cx)` for each predictor layer
 
+        # Iterate over all predictor layers and compute the anchor boxes for each one.
         for i in range(len(self.predictor_sizes)):
             boxes, center, wh, step, offset = self.generate_anchor_boxes_for_layer(feature_map_size=self.predictor_sizes[i],
                                                                                    aspect_ratios=self.aspect_ratios[i],
@@ -323,7 +350,7 @@ class SSDInputEncoder:
 
             # Compute the IoU similarities between all anchor boxes and all ground truth boxes for this batch item.
             # This is a matrix of shape `(num_ground_truth_boxes, num_anchor_boxes)`.
-            similarities = iou(labels[:,[xmin,ymin,xmax,ymax]], y_encoded[i,:,-12:-8], coords=self.coords, mode='outer_product')
+            similarities = iou(labels[:,[xmin,ymin,xmax,ymax]], y_encoded[i,:,-12:-8], coords=self.coords, mode='outer_product', include_border_pixels=self.include_border_pixels)
 
             # First: Do bipartite matching, i.e. match each ground truth box to the one anchor box with the highest IoU.
             #        This ensures that each ground truth box will have at least one good match.
