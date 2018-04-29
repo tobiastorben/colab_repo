@@ -370,10 +370,10 @@ class DataGenerator:
                         if exclude_truncated and (truncated == 1): continue
                         difficult = int(obj.difficult.text)
                         if exclude_difficult and (difficult == 1): continue
-                        xmin = int(obj.bndbox.xmin.text)
-                        ymin = int(obj.bndbox.ymin.text)
-                        xmax = int(obj.bndbox.xmax.text)
-                        ymax = int(obj.bndbox.ymax.text)
+                        xmin = int(float(obj.bndbox.xmin.text))
+                        ymin = int(float(obj.bndbox.ymin.text))
+                        xmax = int(float(obj.bndbox.xmax.text))
+                        ymax = int(float(obj.bndbox.ymax.text))
                         item_dict = {'folder': folder,
                                      'image_name': filename,
                                      'image_id': image_id,
